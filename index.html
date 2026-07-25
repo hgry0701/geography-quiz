@@ -3,14 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>地理クイズ</title>
+
+<title>🌍 地理クイズ</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+
 </head>
 
 <body>
 
-<h1>🌏 地理クイズ</h1>
+<div class="container">
 
-<p>サイト作成成功！🎉</p>
+<h1>🌍 地理クイズ</h1>
+
+<div id="start">
+
+<h2>スタート</h2>
+
+<p>毎回20問がランダムで出題されます！</p>
+
+<button onclick="startQuiz()">
+▶ クイズ開始
+</button>
+
+</div>
+
+<div id="quiz" style="display:none;">
+
+<h2 id="question"></h2>
+
+<div id="choices"></div>
+
+<p id="score"></p>
+
+</div>
+
+<div id="finish" style="display:none;">
+
+<h2>終了！🎉</h2>
+
+<p id="result"></p>
+
+<button onclick="location.reload()">
+もう一度遊ぶ
+</button>
+
+</div>
+
+</div>
+
+<script src="questions.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
