@@ -65,3 +65,110 @@ function showQuestion(){
     timer = setInterval(updateTimer,1000);
 
 }
+function updateTimer(){
+
+    timeLeft--;
+
+    const t = document.getElementById("time");
+
+    if(t){
+        t.textContent = timeLeft;
+    }
+
+    if(timeLeft <= 0){
+
+        clearInterval(timer);
+
+        wrongQuestions.push(quiz[current]);
+
+        current++;
+
+        if(current >= quiz.length){
+            finishQuiz();
+        }else{
+            showQuestion();
+        }
+
+    }
+
+}
+
+function answer(index){
+
+    clearInterval(timer);
+
+    if(index === quiz[current].answer){
+
+        score++;
+
+    }else{
+
+        wrongQuestions.push(quiz[current]);
+
+    }
+
+    current++;
+
+    if(current >= quiz.length){
+
+        finishQuiz();
+
+    }else{
+
+        showQuestion();
+
+    }
+
+}
+
+function finishQuiz(){
+
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("finish").style.display = "block";
+
+    const rate = Math.round(score / quiz.length * 100);
+
+    localStorage.setItem("bestScore",
+        Math.max(score, Number(localStorage.getItem("bestScore") || 0))
+    );
+
+    document.getElementById("result").innerHTML = `
+        <h2>結果</h2>
+
+        <p>正解数：${score} / ${quiz.length}</p>
+
+        <p>正答率：${rate}%</p>
+
+        <p>最高点：${localStorage.getItem("bestScore")}点</p>
+
+        <button onclick="reviewWrong()">
+        🔥 間違えた問題を復習
+        </button>
+    `;
+
+}
+
+function reviewWrong(){
+
+    if(wrongQuestions.length === 0){
+
+        alert("全問正解です！🎉");
+
+        return;
+
+    }
+
+    quiz = [...wrongQuestions];
+
+    wrongQuestions = [];
+
+    current = 0;
+
+    score = 0;
+
+    document.getElementById("finish").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+
+    showQuestion();
+
+}
