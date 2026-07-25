@@ -1,79 +1,67 @@
 let quiz = [];
 let current = 0;
 let score = 0;
+let wrongQuestions = [];
+let timer;
+let timeLeft = 30;
 
 function shuffle(array){
-    return [...array].sort(()=>Math.random()-0.5);
+    const arr = [...array];
+    for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
 }
 
 function startQuiz(){
 
+    // 20問ランダム（20問未満なら全部）
     quiz = shuffle(questions).slice(0,20);
 
-    // 問題数が20未満なら全部使う
     if(questions.length < 20){
         quiz = shuffle(questions);
     }
 
     current = 0;
     score = 0;
+    wrongQuestions = [];
 
-    document.getElementById("start").style.display="none";
-    document.getElementById("quiz").style.display="block";
+    document.getElementById("start").style.display = "none";
+    document.getElementById("finish").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
 
     showQuestion();
 }
 
 function showQuestion(){
 
+    clearInterval(timer);
+
+    timeLeft = 30;
+
     const q = quiz[current];
 
-    document.getElementById("question").textContent =
-    `問題 ${current+1} / ${quiz.length}\n${q.question}`;
+    document.getElementById("question").innerHTML =
+    `問題 ${current+1} / ${quiz.length}<br><br>${q.question}<br><br>⏱️ <span id="time">${timeLeft}</span> 秒`;
 
-    const choices = document.getElementById("choices");
-    choices.innerHTML="";
+    const area = document.getElementById("choices");
+    area.innerHTML = "";
 
     q.choices.forEach((choice,index)=>{
 
-        const btn=document.createElement("button");
+        const btn = document.createElement("button");
 
-        btn.className="choice";
+        btn.className = "choice";
 
-        btn.textContent=choice;
+        btn.textContent = choice;
 
-        btn.onclick=()=>answer(index);
+        btn.onclick = ()=>answer(index);
 
-        choices.appendChild(btn);
+        area.appendChild(btn);
 
     });
 
-}
-
-function answer(index){
-
-    if(index===quiz[current].answer){
-        score++;
-    }
-
-    current++;
-
-    if(current>=quiz.length){
-
-        document.getElementById("quiz").style.display="none";
-        document.getElementById("finish").style.display="block";
-
-        const rate=Math.round(score/quiz.length*100);
-
-        document.getElementById("result").innerHTML=
-        `
-        正解数：${score} / ${quiz.length}<br><br>
-        正答率：${rate}%
-        `;
-
-        return;
-    }
-
-    showQuestion();
+    timer = setInterval(updateTimer,1000);
 
 }
